@@ -1,0 +1,10 @@
+<main class="main">
+  <input type="file" (change)="onFileChange($event)" />
+  <button (click)="upload()">Upload</button>
+
+  @if (resultUrl) {
+  <div>
+    <img [src]="resultUrl" />
+  </div>
+  }
+</main>
