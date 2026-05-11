@@ -151,6 +151,9 @@ activemq-data/
 .env
 .envrc
 .venv
+../.venv
+
+
 env/
 venv/
 ENV/
@@ -220,3 +223,18 @@ __marimo__/
 
 # pdf literature
 model_development/literature/*.pdf
+
+# Ignore .jpg files in subfolders of model_development/data/
+model_development/data/test_black/*.jpg
+model_development/data/test_color/*.jpg
+model_development/data/train_color/*.jpg
+model_development/data/train_black/*.jpg
+model_development/data/mini_test_black/*.jpg
+model_development/data/mini_train_black/*.jpg
+model_development/data/mini_test_color/*.jpg
+model_development/data/mini_train_color/*.jpg
+# large zip files
+model_development/data/archive.zip
+
+# pytorch models
+model_development/ddcolor/*.pth
