@@ -14,3 +14,4 @@ tensorflow-docs
 flask
 flask-cors
 opencv-python
+kagglehub
