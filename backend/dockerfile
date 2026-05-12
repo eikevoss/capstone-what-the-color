@@ -2,14 +2,32 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# System dependencies for OpenCV + git for DDColor install
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
+# Install PyTorch (CPU build)
+# For GPU: replace whl/cpu with whl/cu118
+RUN pip install --no-cache-dir \
+    torch==2.2.0 \
+    torchvision==0.17.0 \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Install DDColor directly from GitHub (not available on PyPI)
+RUN pip install --no-cache-dir git+https://github.com/piddnad/DDColor.git
+
+# Install remaining dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Pre-cache DDColor model at build time
+COPY cache_model.py .
+RUN python cache_model.py
+
+# Copy application code
 COPY . .
 
 EXPOSE 5000
