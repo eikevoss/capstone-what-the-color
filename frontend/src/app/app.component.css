@@ -250,14 +250,9 @@ body {
   background: var(--bg);
 }
 
-.original-clip {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.original-clip img {
+.original-img {
   filter: grayscale(100%);
+  z-index: 2;
 }
 
 .slider-handle {
