@@ -220,3 +220,5 @@ __marimo__/
 
 # pdf literature
 model_development/literature/*.pdf
+model_development/data/
+model_development/checkpoints/
