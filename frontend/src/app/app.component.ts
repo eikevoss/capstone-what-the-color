@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { ApiService } from './services/api.service';
 import { CommonModule } from '@angular/common';
 
@@ -20,8 +20,11 @@ export class AppComponent {
   isDragging = false;
   isDraggingSlider = false;
   sliderPos = 50;
+  loadingPhase = 0;
+  loadingPhaseText = 'Uploading...';
+  private phaseTimer?: any;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private zone: NgZone) {}
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -52,24 +55,65 @@ export class AppComponent {
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      this.previewUrl = e.target?.result as string;
-      this.upload();
+      this.zone.run(() => {
+        this.previewUrl = e.target?.result as string;
+        this.isLoading = true;
+        this.startLoadingPhases();
+        this.upload();
+      });
     };
     reader.readAsDataURL(file);
   }
 
   upload() {
-    this.isLoading = true;
     this.api.uploadImage(this.selectedFile).subscribe({
       next: (res) => {
-        this.resultUrl = URL.createObjectURL(res);
-        this.isLoading = false;
+        console.log('✅ upload success', res);
+        this.zone.run(() => {
+          this.stopLoadingPhases();
+          this.resultUrl = URL.createObjectURL(res);
+          this.isLoading = false;
+          console.log('✅ resultUrl set', this.resultUrl);
+        });
       },
-      error: () => {
-        this.error = 'Colorization failed. Please try again.';
-        this.isLoading = false;
+      error: (err) => {
+        console.error('❌ upload error', err);
+        this.zone.run(() => {
+          this.stopLoadingPhases();
+          this.error = 'Colorization failed. Please try again.';
+          this.isLoading = false;
+        });
       }
     });
+  }
+
+  startLoadingPhases() {
+    const phases = [
+      { text: 'Uploading...', phase: 0 },
+      { text: 'Analyzing image...', phase: 1 },
+      { text: 'Colorizing your photo...', phase: 2 },
+    ];
+    let i = 0;
+    this.loadingPhase = 0;
+    this.loadingPhaseText = phases[0].text;
+    this.phaseTimer = setInterval(() => {
+      if (i < phases.length - 1) {
+        i++;
+        this.loadingPhase = phases[i].phase;
+        this.loadingPhaseText = phases[i].text;
+      } else {
+        clearInterval(this.phaseTimer);
+      }
+    }, 2200);
+  }
+
+  stopLoadingPhases() {
+    if (this.phaseTimer) {
+      clearInterval(this.phaseTimer);
+      this.phaseTimer = undefined;
+    }
+    this.loadingPhase = 0;
+    this.loadingPhaseText = 'Uploading...';
   }
 
   onSliderMove(event: MouseEvent) {
@@ -78,6 +122,7 @@ export class AppComponent {
   }
 
   onSliderTouch(event: TouchEvent) {
+    event.preventDefault();
     this.updateSlider(event.touches[0].clientX);
   }
 
@@ -93,5 +138,7 @@ export class AppComponent {
     this.selectedFile = undefined!;
     this.error = undefined;
     this.sliderPos = 50;
+    this.loadingPhase = 0;
+    this.loadingPhaseText = 'Uploading...';
   }
 }
