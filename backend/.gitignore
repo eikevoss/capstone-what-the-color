@@ -222,3 +222,4 @@ __marimo__/
 model_development/literature/*.pdf
 model_development/data/
 model_development/checkpoints/
+model_development/services/data/
