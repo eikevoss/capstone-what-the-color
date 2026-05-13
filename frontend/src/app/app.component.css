@@ -250,9 +250,14 @@ body {
   background: var(--bg);
 }
 
-.original-img {
+.original-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.original-clip img {
   filter: grayscale(100%);
-  z-index: 2;
 }
 
 .slider-handle {
@@ -289,6 +294,8 @@ body {
 
 .label {
   position: absolute;
+  z-index: 20;
+  pointer-events: none;
   top: 16px;
   font-size: 11px;
   font-weight: 500;
