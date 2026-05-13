@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ApiService } from './services/api.service';
 import { CommonModule } from '@angular/common';
 
@@ -24,7 +24,11 @@ export class AppComponent {
   loadingPhaseText = 'Uploading...';
   private phaseTimer?: any;
 
-  constructor(private api: ApiService, private zone: NgZone) {}
+  constructor(
+    private api: ApiService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -59,6 +63,7 @@ export class AppComponent {
         this.previewUrl = e.target?.result as string;
         this.isLoading = true;
         this.startLoadingPhases();
+        this.cdr.detectChanges();
         this.upload();
       });
     };
@@ -73,6 +78,7 @@ export class AppComponent {
           this.stopLoadingPhases();
           this.resultUrl = URL.createObjectURL(res);
           this.isLoading = false;
+          this.cdr.detectChanges();
           console.log('✅ resultUrl set', this.resultUrl);
         });
       },
@@ -82,6 +88,7 @@ export class AppComponent {
           this.stopLoadingPhases();
           this.error = 'Colorization failed. Please try again.';
           this.isLoading = false;
+          this.cdr.detectChanges();
         });
       }
     });
@@ -101,6 +108,7 @@ export class AppComponent {
         i++;
         this.loadingPhase = phases[i].phase;
         this.loadingPhaseText = phases[i].text;
+        this.cdr.detectChanges();
       } else {
         clearInterval(this.phaseTimer);
       }

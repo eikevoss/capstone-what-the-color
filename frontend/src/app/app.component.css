@@ -203,7 +203,7 @@ body {
 .loading-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(12,12,12,0.7);
+  background: rgba(12,12,12,0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -211,7 +211,7 @@ body {
   gap: 16px;
   color: var(--text-dim);
   font-size: 14px;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(12px);
 }
 
 .loading-spinner {
@@ -294,8 +294,6 @@ body {
 
 .label {
   position: absolute;
-  z-index: 20;
-  pointer-events: none;
   top: 16px;
   font-size: 11px;
   font-weight: 500;
@@ -384,4 +382,35 @@ body {
   .nav { padding: 16px 20px; }
   .upload-screen { padding: 90px 20px 40px; }
   .hero-text h1 { font-size: 32px; }
+}
+
+.loading-phase-text {
+  font-size: 14px;
+  color: #999;
+}
+
+.loading-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 4px;
+}
+
+.loading-step {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #444;
+  padding: 0 10px;
+  border-right: 1px solid #2a2a2a;
+  transition: color 0.3s ease;
+}
+
+.loading-step:last-child {
+  border-right: none;
+}
+
+.loading-step.active {
+  color: #7c6ef5;
 }

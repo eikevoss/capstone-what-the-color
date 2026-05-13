@@ -45,7 +45,12 @@
         <img [src]="previewUrl" alt="Processing" />
         <div class="loading-overlay">
           <div class="loading-spinner"></div>
-          <span>Colorizing...</span>
+          <span class="loading-phase-text">{{ loadingPhaseText }}</span>
+          <div class="loading-steps">
+            <span class="loading-step" [class.active]="loadingPhase === 0">Upload</span>
+            <span class="loading-step" [class.active]="loadingPhase === 1">Analyze</span>
+            <span class="loading-step" [class.active]="loadingPhase === 2">Colorize</span>
+          </div>
         </div>
       </div>
     </section>
