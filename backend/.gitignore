@@ -223,6 +223,9 @@ __marimo__/
 
 # pdf literature
 model_development/literature/*.pdf
+model_development/data/
+model_development/checkpoints/
+model_development/services/data/
 
 # Ignore .jpg files in subfolders of model_development/data/
 model_development/data/test_black/*.jpg
