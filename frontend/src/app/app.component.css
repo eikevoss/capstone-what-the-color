@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -49,27 +49,11 @@ body {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: -0.01em;
 }
 
-.logo-mark {
-  width: 24px;
-  height: 24px;
-  background: var(--accent);
-  border-radius: 6px;
-  position: relative;
-  overflow: hidden;
-}
-
-.logo-mark::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3));
+.nav-logo img {
+  height: 32px;
+  width: auto;
 }
 
 .nav-badge {
@@ -98,7 +82,7 @@ body {
 }
 
 .hero-text h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Funnel Display', sans-serif;
   font-size: clamp(36px, 5vw, 58px);
   font-weight: 700;
   line-height: 1.1;

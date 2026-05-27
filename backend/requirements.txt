@@ -14,7 +14,7 @@ tensorflow-docs
 flask
 flask-cors
 opencv-python
-skimage
+scikit-image
 kagglehub
 torch==2.2.0
 torchvision==0.17.0
