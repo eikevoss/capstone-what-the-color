@@ -187,27 +187,34 @@ body {
 .loading-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(12,12,12,0.9);
+  background: rgba(8,8,16,0.55);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  color: var(--text-dim);
+  gap: 10px;
+}
+
+.loading-blob-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+.loading-phase-text {
   font-size: 14px;
-  backdrop-filter: blur(12px);
+  color: #999;
 }
 
-.loading-spinner {
-  width: 36px;
-  height: 36px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.loading-pct {
+  font-size: 42px;
+  font-weight: 500;
+  color: #f5f5f5;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
-
-@keyframes spin { to { transform: rotate(360deg); } }
 
 .result-screen {
   flex: 1;

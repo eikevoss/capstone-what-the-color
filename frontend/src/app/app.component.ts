@@ -30,8 +30,11 @@ export class AppComponent {
   isDraggingSlider = false;
   sliderPos = 50;
   loadingPhase = 0;
-  loadingPhaseText = 'Uploading...';
+  loadingPhaseText = 'Uploading…';
+  loadingProgress = 0;
+  blobBackground = '#080810';
   private phaseTimer?: any;
+  private progressTimer?: any;
 
   constructor(
     private api: ApiService,
@@ -108,9 +111,10 @@ export class AppComponent {
         this.zone.run(() => {
           this.stopLoadingPhases();
           this.resultUrl = URL.createObjectURL(res);
-          this.isLoading = false;
-          console.log('✅ resultUrl set:', !!this.resultUrl, 'previewUrl:', !!this.previewUrl, 'isLoading:', this.isLoading);
-          this.cdr.detectChanges();
+          setTimeout(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          }, 800);
         });
       },
       error: (err) => {
@@ -137,11 +141,12 @@ export class AppComponent {
           this.stopLoadingPhases();
           this.resultUrls = blobs.map(b => URL.createObjectURL(b));
           this.resultUrl = this.resultUrls[0];
-          this.isLoading = false;
           this.currentIndex = 0;
           this.sliderPos = 50;
-          console.log('✅ resultUrls:', this.resultUrls.length, 'previewUrl:', !!this.previewUrl, 'isBatch:', this.isBatch, 'isLoading:', this.isLoading);
-          this.cdr.detectChanges();
+          setTimeout(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          }, 800);
         });
       },
       error: (err) => {
@@ -194,34 +199,86 @@ export class AppComponent {
     });
   }
 
+  makeBlobBg(p: number): string {
+    const rise = p / 100;
+    const b1y = 150 - rise * 110;
+    const b2y = 140 - rise * 100;
+    const b3y = 135 - rise * 95;
+    const b4y = 160 - rise * 120;
+    const b5y = 145 - rise * 95;
+    const b6y = 155 - rise * 105;
+    const s1 = 60 + rise * 55;
+    const s2 = 55 + rise * 50;
+    const s3 = 50 + rise * 45;
+    const s4 = 45 + rise * 40;
+    const s5 = 65 + rise * 50;
+    const s6 = 70 + rise * 55;
+    const alpha = Math.min(0.45 + rise * 0.55, 1);
+    const a = Math.round(alpha * 255).toString(16).padStart(2, '0');
+    return `
+      radial-gradient(ellipse ${s6}% ${s6}% at 45% ${b6y}%, #7c6ef5${a}, transparent 62%),
+      radial-gradient(ellipse ${s1}% ${s1}% at 15% ${b1y}%, #2a4ccc${a}, transparent 65%),
+      radial-gradient(ellipse ${s2}% ${s2}% at 88% ${b2y}%, #8ab0f0${a}, transparent 60%),
+      radial-gradient(ellipse ${s3}% ${s3}% at 8%  ${b3y}%, #0d5c5c${a}, transparent 58%),
+      radial-gradient(ellipse ${s4}% ${s4}% at 55% ${b4y}%, #c8a0d0${a}, transparent 55%),
+      radial-gradient(ellipse ${s5}% ${s5}% at 72% ${b5y}%, #1a3ab8${a}, transparent 62%),
+      #080810
+    `;
+  }
+
   startLoadingPhases() {
-    const phases = [
-      { text: 'Uploading...', phase: 0 },
-      { text: 'Analyzing image...', phase: 1 },
-      { text: 'Colorizing your photo...', phase: 2 },
-    ];
-    let i = 0;
+    this.loadingProgress = 0;
     this.loadingPhase = 0;
-    this.loadingPhaseText = phases[0].text;
-    this.phaseTimer = setInterval(() => {
-      if (i < phases.length - 1) {
-        i++;
-        this.loadingPhase = phases[i].phase;
-        this.loadingPhaseText = phases[i].text;
-        this.cdr.detectChanges();
-      } else {
-        clearInterval(this.phaseTimer);
+    this.loadingPhaseText = 'Uploading…';
+
+    // Simulate progress: 0–25% Uploading, 25–60% Analyzing, 60–90% Colorizing
+    // Slows down near 90% so the wait feels natural
+    const phases = [
+      { until: 25, text: 'Uploading…' },
+      { until: 60, text: 'Analyzing…' },
+      { until: 90, text: 'Colorizing…' },
+    ];
+
+    this.progressTimer = setInterval(() => {
+      if (this.loadingProgress >= 90) {
+        // Very slowly inch toward 90 max — feels like it's almost done
+        const remaining = 90 - this.loadingProgress;
+        if (remaining > 0.5) {
+          this.loadingProgress = Math.round(Math.min(this.loadingProgress + 0.3, 90));
+          this.blobBackground = this.makeBlobBg(this.loadingProgress);
+          this.cdr.detectChanges();
+        }
+        return;
       }
-    }, 2200);
+      // Speed decreases as we approach 90%
+      const speed = this.loadingProgress < 60 ? 2.5 : 1.2;
+      this.loadingProgress = Math.round(Math.min(this.loadingProgress + Math.random() * speed, 90));
+      const p = this.loadingProgress;
+      const phase = phases.find(ph => p < ph.until) ?? phases[phases.length - 1];
+      this.loadingPhaseText = phase.text;
+      this.blobBackground = this.makeBlobBg(p);
+      this.cdr.detectChanges();
+    }, 180);
   }
 
   stopLoadingPhases() {
+    if (this.progressTimer) {
+      clearInterval(this.progressTimer);
+      this.progressTimer = undefined;
+    }
     if (this.phaseTimer) {
       clearInterval(this.phaseTimer);
       this.phaseTimer = undefined;
     }
-    this.loadingPhase = 0;
-    this.loadingPhaseText = 'Uploading...';
+    this.loadingPhaseText = 'Done!';
+
+    // Animate 95 → 100 before showing result
+    const finishTimer = setInterval(() => {
+      this.loadingProgress = Math.min(this.loadingProgress + 1, 100);
+      this.blobBackground = this.makeBlobBg(this.loadingProgress);
+      this.cdr.detectChanges();
+      if (this.loadingProgress >= 100) clearInterval(finishTimer);
+    }, 60);
   }
 
   onSliderMove(event: MouseEvent) {
@@ -315,6 +372,8 @@ export class AppComponent {
     this.error = undefined;
     this.sliderPos = 50;
     this.loadingPhase = 0;
-    this.loadingPhaseText = 'Uploading...';
+    this.loadingPhaseText = 'Uploading…';
+    this.loadingProgress = 0;
+    this.blobBackground = '#080810';
   }
 }
