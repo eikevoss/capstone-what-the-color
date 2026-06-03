@@ -234,10 +234,73 @@ export class AppComponent {
     this.updateSlider(event.touches[0].clientX);
   }
 
+  onImageLoad() {
+    setTimeout(() => {
+      const container = this.sliderContainer?.nativeElement;
+      if (!container) return;
+      const bounds = this.getImageBounds();
+      if (bounds) {
+        const rect = container.getBoundingClientRect();
+        const offsetTopPct = ((bounds.top - rect.top) / rect.height) * 100;
+        const offsetBottomPct = ((rect.bottom - bounds.bottom) / rect.height) * 100;
+        container.style.setProperty('--img-top', offsetTopPct + '%');
+        container.style.setProperty('--img-bottom', offsetBottomPct + '%');
+      }
+    }, 50);
+  }
+
+  getImageBounds(): { left: number, right: number, top: number, bottom: number, width: number, height: number } | null {
+    const container = this.sliderContainer?.nativeElement;
+    if (!container) return null;
+    const rect = container.getBoundingClientRect();
+    const img = container.querySelector('img') as HTMLImageElement;
+    if (!img || !img.naturalWidth || !img.naturalHeight) return null;
+
+    const containerRatio = rect.width / rect.height;
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+
+    let imgW: number, imgH: number, offsetLeft: number, offsetTop: number;
+
+    if (imgRatio > containerRatio) {
+      imgW = rect.width;
+      imgH = rect.width / imgRatio;
+      offsetLeft = 0;
+      offsetTop = (rect.height - imgH) / 2;
+    } else {
+      imgH = rect.height;
+      imgW = rect.height * imgRatio;
+      offsetLeft = (rect.width - imgW) / 2;
+      offsetTop = 0;
+    }
+
+    return {
+      left: rect.left + offsetLeft,
+      right: rect.left + offsetLeft + imgW,
+      top: rect.top + offsetTop,
+      bottom: rect.top + offsetTop + imgH,
+      width: imgW,
+      height: imgH
+    };
+  }
+
   updateSlider(clientX: number) {
-    const rect = this.sliderContainer.nativeElement.getBoundingClientRect();
-    const pos = ((clientX - rect.left) / rect.width) * 100;
-    this.sliderPos = Math.min(Math.max(pos, 0), 100);
+    const container = this.sliderContainer.nativeElement;
+    const rect = container.getBoundingClientRect();
+    const bounds = this.getImageBounds();
+
+    if (bounds) {
+      const clampedX = Math.min(Math.max(clientX, bounds.left), bounds.right);
+      this.sliderPos = ((clampedX - rect.left) / rect.width) * 100;
+
+      // set CSS vars for handle top/bottom to match image bounds
+      const offsetTopPct = ((bounds.top - rect.top) / rect.height) * 100;
+      const offsetBottomPct = ((rect.bottom - bounds.bottom) / rect.height) * 100;
+      container.style.setProperty('--img-top', offsetTopPct + '%');
+      container.style.setProperty('--img-bottom', offsetBottomPct + '%');
+    } else {
+      const pos = ((clientX - rect.left) / rect.width) * 100;
+      this.sliderPos = Math.min(Math.max(pos, 0), 100);
+    }
   }
 
   reset() {

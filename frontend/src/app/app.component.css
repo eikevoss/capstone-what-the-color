@@ -223,6 +223,9 @@ body {
   user-select: none;
   overflow: hidden;
   min-height: calc(100vh - 130px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .result-img {
@@ -234,20 +237,10 @@ body {
   background: var(--bg);
 }
 
-.original-clip {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.original-clip img {
-  filter: grayscale(100%);
-}
-
 .slider-handle {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: var(--img-top, 0);
+  bottom: var(--img-bottom, 0);
   display: flex;
   flex-direction: column;
   align-items: center;

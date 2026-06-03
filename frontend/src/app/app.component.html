@@ -78,7 +78,7 @@
                (mouseleave)="isDraggingSlider = false"
                #sliderContainer>
 
-            <img [src]="currentResultUrl" class="result-img" alt="Colorized" />
+            <img [src]="currentResultUrl" class="result-img" alt="Colorized" (load)="onImageLoad()" />
             <img [src]="currentPreviewUrl" class="result-img"
                  [style.clip-path]="'inset(0 ' + (100 - sliderPos) + '% 0 0)'"
                  style="filter: grayscale(100%)" alt="Original" />
@@ -117,7 +117,7 @@
              (mouseleave)="isDraggingSlider = false"
              #sliderContainer>
 
-          <img [src]="resultUrl" class="result-img" alt="Colorized" />
+          <img [src]="resultUrl" class="result-img" alt="Colorized" (load)="onImageLoad()" />
           <img [src]="previewUrl" class="result-img"
                [style.clip-path]="'inset(0 ' + (100 - sliderPos) + '% 0 0)'"
                style="filter: grayscale(100%)" alt="Original" />
@@ -144,8 +144,8 @@
           <div class="result-actions-spacer"></div>
           <button class="btn-secondary" (click)="reset()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M3 12a9 9 0 109-9 9 9 0 00-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M3 4v8h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             New Images
           </button>
