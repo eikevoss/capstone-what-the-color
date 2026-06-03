@@ -40,13 +40,10 @@
   <!-- State 2: Loading -->
   @if (previewUrl && isLoading) {
     <section class="loading-screen">
-      <div class="loading-preview">
-        <img [src]="previewUrl" alt="Processing" />
-        <div class="loading-blob-layer" [style.background]="blobBackground"></div>
-        <div class="loading-overlay">
-          <span class="loading-phase-text">{{ loadingPhaseText }}</span>
-          <span class="loading-pct">{{ loadingProgress | number:'1.0-0' }}%</span>
-        </div>
+      <div class="loading-blob-layer" [style.background]="blobBackground"></div>
+      <div class="loading-overlay">
+        <span class="loading-phase-text">{{ loadingPhaseText }}</span>
+        <span class="loading-pct">{{ loadingProgress | number:'1.0-0' }}%</span>
       </div>
     </section>
   }

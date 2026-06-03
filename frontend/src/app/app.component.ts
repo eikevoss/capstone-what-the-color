@@ -231,34 +231,24 @@ export class AppComponent {
     this.loadingPhase = 0;
     this.loadingPhaseText = 'Uploading…';
 
-    // Simulate progress: 0–25% Uploading, 25–60% Analyzing, 60–90% Colorizing
-    // Slows down near 90% so the wait feels natural
+    // Asymptotic progress — never fully stops, approaches 99% but never reaches it
     const phases = [
       { until: 25, text: 'Uploading…' },
       { until: 60, text: 'Analyzing…' },
-      { until: 90, text: 'Colorizing…' },
+      { until: 99, text: 'Colorizing…' },
     ];
 
     this.progressTimer = setInterval(() => {
-      if (this.loadingProgress >= 90) {
-        // Very slowly inch toward 90 max — feels like it's almost done
-        const remaining = 90 - this.loadingProgress;
-        if (remaining > 0.5) {
-          this.loadingProgress = Math.round(Math.min(this.loadingProgress + 0.3, 90));
-          this.blobBackground = this.makeBlobBg(this.loadingProgress);
-          this.cdr.detectChanges();
-        }
-        return;
-      }
-      // Speed decreases as we approach 90%
-      const speed = this.loadingProgress < 60 ? 2.5 : 1.2;
-      this.loadingProgress = Math.round(Math.min(this.loadingProgress + Math.random() * speed, 90));
+      // Speed slows down as we get closer to 99 — always moving, never stuck
+      const remaining = 99 - this.loadingProgress;
+      const increment = remaining * 0.015 + 0.05;
+      this.loadingProgress = Math.min(Math.round(this.loadingProgress + increment), 99);
       const p = this.loadingProgress;
       const phase = phases.find(ph => p < ph.until) ?? phases[phases.length - 1];
       this.loadingPhaseText = phase.text;
       this.blobBackground = this.makeBlobBg(p);
       this.cdr.detectChanges();
-    }, 180);
+    }, 300);
   }
 
   stopLoadingPhases() {
