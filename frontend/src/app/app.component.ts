@@ -33,6 +33,7 @@ export class AppComponent {
   loadingPhaseText = 'Uploading…';
   loadingProgress = 0;
   blobBackground = '#080810';
+  blobPalette: string[] = ['#7c6ef5', '#2a4ccc', '#8ab0f0', '#0d5c5c', '#c8a0d0'];
   private phaseTimer?: any;
   private progressTimer?: any;
 
@@ -66,6 +67,7 @@ export class AppComponent {
   }
 
   processFiles(files: File[]) {
+    this.pickRandomPalette();
     this.isBatch = files.length > 1;
     this.selectedFiles = files;
     this.selectedFile = files[0];
@@ -215,15 +217,36 @@ export class AppComponent {
     const s6 = 70 + rise * 55;
     const alpha = Math.min(0.45 + rise * 0.55, 1);
     const a = Math.round(alpha * 255).toString(16).padStart(2, '0');
+    const [c1, c2, c3, c4, c5] = this.blobPalette;
     return `
-      radial-gradient(ellipse ${s6}% ${s6}% at 45% ${b6y}%, #7c6ef5${a}, transparent 62%),
-      radial-gradient(ellipse ${s1}% ${s1}% at 15% ${b1y}%, #2a4ccc${a}, transparent 65%),
-      radial-gradient(ellipse ${s2}% ${s2}% at 88% ${b2y}%, #8ab0f0${a}, transparent 60%),
-      radial-gradient(ellipse ${s3}% ${s3}% at 8%  ${b3y}%, #0d5c5c${a}, transparent 58%),
-      radial-gradient(ellipse ${s4}% ${s4}% at 55% ${b4y}%, #c8a0d0${a}, transparent 55%),
-      radial-gradient(ellipse ${s5}% ${s5}% at 72% ${b5y}%, #1a3ab8${a}, transparent 62%),
+      radial-gradient(ellipse ${s6}% ${s6}% at 45% ${b6y}%, ${c1}${a}, transparent 62%),
+      radial-gradient(ellipse ${s1}% ${s1}% at 15% ${b1y}%, ${c2}${a}, transparent 65%),
+      radial-gradient(ellipse ${s2}% ${s2}% at 88% ${b2y}%, ${c3}${a}, transparent 60%),
+      radial-gradient(ellipse ${s3}% ${s3}% at 8%  ${b3y}%, ${c4}${a}, transparent 58%),
+      radial-gradient(ellipse ${s4}% ${s4}% at 55% ${b4y}%, ${c5}${a}, transparent 55%),
+      radial-gradient(ellipse ${s5}% ${s5}% at 72% ${b5y}%, ${c2}${a}, transparent 62%),
       #080810
     `;
+  }
+
+  pickRandomPalette() {
+    const palettes = [
+      // Original — Blue/Purple/Teal/Mauve
+      ['#7c6ef5', '#2a4ccc', '#8ab0f0', '#0d5c5c', '#c8a0d0'],
+      // Sunset — Red/Orange/Pink/Purple
+      ['#e040fb', '#ff4081', '#ff6d00', '#aa00ff', '#f06292'],
+      // Aurora — Green/Cyan/Blue/Violet
+      ['#00e5ff', '#00bfa5', '#1de9b6', '#651fff', '#40c4ff'],
+      // Inferno — Deep Red/Gold/Crimson
+      ['#ff1744', '#ff6f00', '#d500f9', '#c62828', '#ff6d00'],
+      // Ocean — Navy/Teal/Seafoam/Indigo
+      ['#0d47a1', '#006064', '#00897b', '#1565c0', '#4a148c'],
+      // Galaxy — Deep Purple/Pink/Cobalt
+      ['#6a1b9a', '#ad1457', '#1a237e', '#4527a0', '#880e4f'],
+      // Forest — Dark Green/Emerald/Teal/Blue
+      ['#1b5e20', '#004d40', '#0d47a1', '#33691e', '#006064'],
+    ];
+    this.blobPalette = palettes[Math.floor(Math.random() * palettes.length)];
   }
 
   startLoadingPhases() {
@@ -285,13 +308,21 @@ export class AppComponent {
     setTimeout(() => {
       const container = this.sliderContainer?.nativeElement;
       if (!container) return;
+      const img = container.querySelector('img') as HTMLImageElement;
+      if (img && img.naturalWidth && img.naturalHeight) {
+        container.style.setProperty('--img-aspect', `${img.naturalWidth}/${img.naturalHeight}`);
+      }
       const bounds = this.getImageBounds();
       if (bounds) {
         const rect = container.getBoundingClientRect();
+        const offsetTopPx = Math.round(bounds.top - rect.top);
         const offsetTopPct = ((bounds.top - rect.top) / rect.height) * 100;
         const offsetBottomPct = ((rect.bottom - bounds.bottom) / rect.height) * 100;
+        const offsetLeftPx = Math.round(bounds.left - rect.left) + 16;
         container.style.setProperty('--img-top', offsetTopPct + '%');
+        container.style.setProperty('--img-top-px', offsetTopPx + 'px');
         container.style.setProperty('--img-bottom', offsetBottomPct + '%');
+        container.style.setProperty('--img-offset-left', offsetLeftPx + 'px');
       }
     }, 50);
   }
