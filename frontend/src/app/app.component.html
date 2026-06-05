@@ -132,43 +132,48 @@
 
       <!-- Action bar -->
       <div class="result-actions">
-        @if (isBatch) {
-          <span class="batch-counter">{{ currentIndex + 1 }} / {{ resultUrls.length }}</span>
-          <div class="result-actions-spacer"></div>
-          <button class="btn-secondary" (click)="reset()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            New Images
-          </button>
-          <button class="btn-secondary" (click)="downloadAll()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 4v12M8 16l4 4 4-4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Download All
-          </button>
-          <button class="btn-primary" (click)="downloadCurrent()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 4v12M8 16l4 4 4-4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Save This
-          </button>
-        } @else {
-          <button class="btn-secondary" (click)="reset()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            New Image
-          </button>
-          <a [href]="resultUrl" download="colorlab_result.jpg" class="btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 4v12M8 16l4 4 4-4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Download
-          </a>
-        }
+        <div class="result-actions-wrapper">
+          @if (isBatch) {
+            <span class="batch-counter">{{ currentIndex + 1 }} / {{ resultUrls.length }}</span>
+          }
+          <div style="display:flex;align-items:center;gap:12px;">
+            @if (isBatch) {
+              <button class="btn-secondary" (click)="reset()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                New Images
+              </button>
+              <button class="btn-secondary" (click)="downloadAll()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4v12M8 16l4 4 4-4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Download All
+              </button>
+              <button class="btn-primary" (click)="downloadCurrent()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4v12M8 16l4 4 4-4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Save This
+              </button>
+            } @else {
+              <button class="btn-secondary" (click)="reset()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                New Image
+              </button>
+              <a [href]="resultUrl" download="colorlab_result.jpg" class="btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4v12M8 16l4 4 4-4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Download
+              </a>
+            }
+          </div>
+        </div>
       </div>
     </section>
   }
