@@ -1,5 +1,8 @@
 # ColorLab — AI Photo Colorization
 
+![ColorLab Logo](docs/assets/logo.png)
+<!-- Logo placeholder: replace docs/assets/logo.png with the actual logo file (recommended: SVG or PNG, min. 256×256 px) -->
+
 ColorLab is a full-stack web app that automatically colorizes black-and-white photos using the [DDColor](https://github.com/piddnad/DDColor) deep learning model. Upload one image or a batch, drag a slider to compare before/after, and download the results.
 
 ---
@@ -128,6 +131,40 @@ ColorLab uses **DDColor** (ModelScope variant), a dual-decoder transformer archi
 - Weights: [`piddnad/ddcolor_modelscope`](https://huggingface.co/piddnad/ddcolor_modelscope) on Hugging Face
 
 ---
+
+
+## UI Dashboard States
+
+The app has five distinct UI states. Screenshots should be placed in `docs/assets/` and referenced below.
+
+### 1. Idle — Upload
+
+> ![Idle state](docs/assets/ui-idle.png)
+> <!-- Placeholder: screenshot of the empty drop-zone -->
+
+The initial view. The user sees a drag-and-drop zone with a file picker button. No image has been selected yet.
+
+### 2. Processing
+
+> ![Processing state](docs/assets/ui-processing.png)
+> <!-- Placeholder: screenshot of the progress bar during colorization -->
+
+Shown while the image is being sent to the backend and colorized. 
+
+### 3. Result — Before/After Comparison
+
+> ![Result state](docs/assets/ui-result.png)
+> <!-- Placeholder: screenshot of the before/after slider -->
+
+After colorization completes, the result is displayed in a full-width before/after slider. Dragging the divider reveals the colorized version. Action buttons for **Download** and **New Images** appear below the image.
+
+### 4. Batch Mode
+
+> ![Batch state](docs/assets/ui-batch.png)
+> <!-- Placeholder: screenshot of the batch queue -->
+
+When multiple images are uploaded at once, each result can be downloaded individually or all at once via Download all (.zip). Use New Images to clear the queue and start a fresh upload.
+
 
 ## Troubleshooting
 
