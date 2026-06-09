@@ -1,7 +1,6 @@
 # ColorLab — AI Photo Colorization
 
-![ColorLab Logo](docs/assets/logo.png)
-<!-- Logo placeholder: replace docs/assets/logo.png with the actual logo file (recommended: SVG or PNG, min. 256×256 px) -->
+<img width="3000" height="2000" alt="lab-logo" src="https://github.com/user-attachments/assets/308dc6cd-b559-4ad6-80a4-1bc217ada768" />
 
 ColorLab is a full-stack web app that automatically colorizes black-and-white photos using the [DDColor](https://github.com/piddnad/DDColor) deep learning model. Upload one image or a batch, drag a slider to compare before/after, and download the results.
 
@@ -137,31 +136,21 @@ ColorLab uses **DDColor** (ModelScope variant), a dual-decoder transformer archi
 
 The app has five distinct UI states. Screenshots should be placed in `docs/assets/` and referenced below.
 
-### 1. Idle — Upload
-
-> ![Idle state](docs/assets/ui-idle.png)
-> <!-- Placeholder: screenshot of the empty drop-zone -->
-
-The initial view. The user sees a drag-and-drop zone with a file picker button. No image has been selected yet.
+### 1. Upload
+<img width="1440" height="785" alt="Dropzone" src="https://github.com/user-attachments/assets/bb16def5-0663-47b6-887f-00a6983d0aaf" />
 
 ### 2. Processing
 
-> ![Processing state](docs/assets/ui-processing.png)
-> <!-- Placeholder: screenshot of the progress bar during colorization -->
-
-Shown while the image is being sent to the backend and colorized. 
+<img width="1435" height="784" alt="Processing01" src="https://github.com/user-attachments/assets/198b9ab3-a5ce-4391-9dc2-71eee58c4154" />
 
 ### 3. Result — Before/After Comparison
 
-> ![Result state](docs/assets/ui-result.png)
-> <!-- Placeholder: screenshot of the before/after slider -->
+<img width="1435" height="787" alt="Comparison01" src="https://github.com/user-attachments/assets/df86f80f-8825-447d-9894-6b855af4ac16" />
 
-After colorization completes, the result is displayed in a full-width before/after slider. Dragging the divider reveals the colorized version. Action buttons for **Download** and **New Images** appear below the image.
 
 ### 4. Batch Mode
 
-> ![Batch state](docs/assets/ui-batch.png)
-> <!-- Placeholder: screenshot of the batch queue -->
+<img width="1436" height="786" alt="Batch" src="https://github.com/user-attachments/assets/d9afa746-d853-4828-beab-65721faed3fb" />
 
 When multiple images are uploaded at once, each result can be downloaded individually or all at once via Download all (.zip). Use New Images to clear the queue and start a fresh upload.
 
