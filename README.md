@@ -137,20 +137,20 @@ ColorLab uses **DDColor** (ModelScope variant), a dual-decoder transformer archi
 The app has five distinct UI states. Screenshots should be placed in `docs/assets/` and referenced below.
 
 ### 1. Upload
-<img width="1440" height="785" alt="Dropzone" src="https://github.com/user-attachments/assets/bb16def5-0663-47b6-887f-00a6983d0aaf" />
+<img width="2880" height="1570" alt="Dropzone_New" src="https://github.com/user-attachments/assets/64dc7197-1121-4683-ad18-4f4929d86ec5" />
 
 ### 2. Processing
 
-<img width="1435" height="784" alt="Processing01" src="https://github.com/user-attachments/assets/198b9ab3-a5ce-4391-9dc2-71eee58c4154" />
+<img width="2870" height="1568" alt="Processing_New" src="https://github.com/user-attachments/assets/ce15f4da-e89f-4080-9bd7-98a8295e5ec8" />
 
 ### 3. Result — Before/After Comparison
 
-<img width="1435" height="787" alt="Comparison01" src="https://github.com/user-attachments/assets/df86f80f-8825-447d-9894-6b855af4ac16" />
+<img width="2870" height="1574" alt="Comparison_New" src="https://github.com/user-attachments/assets/4cc5aeef-d305-4fea-abf9-9e5989583e91" />
 
 
 ### 4. Batch Mode
 
-<img width="1436" height="786" alt="Batch" src="https://github.com/user-attachments/assets/d9afa746-d853-4828-beab-65721faed3fb" />
+<img width="2872" height="1572" alt="Batch_New" src="https://github.com/user-attachments/assets/0a061863-189c-4c0f-b7c3-2f9ad40b6231" />
 
 When multiple images are uploaded at once, each result can be downloaded individually or all at once via Download all (.zip). Use New Images to clear the queue and start a fresh upload.
 
