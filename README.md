@@ -134,8 +134,6 @@ ColorLab uses **DDColor** (ModelScope variant), a dual-decoder transformer archi
 
 ## UI Dashboard States
 
-The app has five distinct UI states. Screenshots should be placed in `docs/assets/` and referenced below.
-
 ### 1. Upload
 <img width="2880" height="1570" alt="Dropzone_New" src="https://github.com/user-attachments/assets/64dc7197-1121-4683-ad18-4f4929d86ec5" />
 
