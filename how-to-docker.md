@@ -10,6 +10,9 @@
 ## rebuild only when needed 
     docker compose up   
 
+## rebuild frontend (works for Julia)
+    docker compose up --build frontend
+
 ## one liner to flush everything and rebuild app
     docker compose down --volumes --remove-orphans && docker compose build --no-cache && docker compose up
 
