@@ -150,7 +150,7 @@ ColorLab uses **DDColor** (ModelScope variant), a dual-decoder transformer archi
 
 <img width="2872" height="1572" alt="Batch_New" src="https://github.com/user-attachments/assets/0a061863-189c-4c0f-b7c3-2f9ad40b6231" />
 
-When multiple images are uploaded at once, each result can be downloaded individually or all at once via Download all (.zip). Use New Images to clear the queue and start a fresh upload.
+When multiple images are uploaded at once, each result can be downloaded individually or all at once via Download all. Use New Images to clear the queue and start a fresh upload.
 
 
 ## Troubleshooting
