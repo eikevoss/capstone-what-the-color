@@ -91,3 +91,49 @@ In training, diffusion models gradually diffuse a data point with random noise, 
 A trained diffusion model can then generate new data points that resemble the training data by simply denoising a random initial sample of pure noise. Conceptually, this is similar to a denoising autoencoder in which the noisy images act as latent variables.
 
 Directly transforming random noise into a coherent image is extremely difficult and complex, but transforming a noisy image into a slightly less noisy image is relatively easy and straightforward. Diffusion models therefore formulate the reverse diffusion process as an incremental, step-by-step transformation of a simple distribution (like Gaussian noise) to a more complex distribution (like a coherent image).
+
+
+## DDColor Model
+
+### Core Ideas
+- The paper argues that earlier CNN-based methods such as CIC, InstColor, and DeOldify often produce dull or semantically wrong colors, GAN-prior methods such as Wu et al. and BigColor can introduce artifacts, and transformer-based methods such as ColTran, CT2, and ColorFormer often depend on hand-crafted color priors or suffer from color bleeding.
+- End-to-End architecture with two decoders: Pixel decoder for spatial detail, query-based color decoder for semantic color reasoning
+
+- The model works in CIELAB color space. It receives the luminance channel L, i.e. the grayscale image, and predicts the missing chrominance channels A and B. The predicted AB channels are then concatenated with the input L channel to form the final color image.
+- The architecture starts with a backbone encoder, specifically ConvNeXt-L in the main experiments, although the authors note that other hierarchical backbones such as ResNet or Swin Transformer could also be used. This encoder extracts multi-scale features at resolutions such as 1/4, 1/8, 1/16, and 1/32 of the input image. These features then feed into the two decoders.
+- The pixel decoder restores spatial resolution. It is a feature upsampling pathway with shortcut connections from the encoder, similar in spirit to encoder-decoder designs used in dense prediction. Instead of deconvolution or interpolation, it uses PixelShuffle, a sub-pixel rearrangement operation known from super-resolution. Its output is a full-resolution image embedding: it knows “where things are” in the image.
+- The color decoder is the more *novel part*. It uses learnable color queries, inspired by query-based transformers such as DETR, MaskFormer, and QueryInst. Instead of manually defining color bins, semantic-color mappings, or dataset-level color priors, the model learns a set of color embeddings directly from image features. Each color decoder block first performs cross-attention between color queries and visual features, then self-attention among the color queries, then an MLP. In simple terms: the queries look at the image features, decide which semantic regions they correspond to, then coordinate with one another to form a coherent color representation.
+- A key design choice is that the color decoder uses multi-scale features from the pixel decoder, specifically 1/16, 1/8, and 1/4 scales. This matters because color bleeding often happens when a model understands global semantics but not fine boundaries. Multi-scale features let DDColor combine coarse semantic context with finer spatial information.
+- Finally, a lightweight fusion module combines the pixel decoder output and color decoder output. It computes a dot product between the semantic-aware color embeddings and the per-pixel image embedding, then applies a 1×1 convolution to predict the AB channels. So the final color is not predicted only from local pixels, and not only from global semantic tokens, but from their interaction.
+
+### Losses used during training
+
+1. Pixel loss:
+This is an L1 loss between the generated color image and the ground-truth image. L1 loss encourages the output to be close to the real image at the pixel level. It is useful for stabilizing training and preserving structure, but by itself it can encourage “average” colors, because many plausible colors may exist for the same grayscale input.
+
+2. Perceptual loss:
+The perceptual loss uses a pretrained VGG16 network. Instead of comparing only raw pixels, it compares deep feature activations of the generated and real images. This encourages the generated image to be semantically and visually similar to the target at a higher level: shapes, object appearance, and texture-like cues matter more than exact per-pixel equality.
+
+3. Adversarial loss:
+The authors use a PatchGAN discriminator, from the pix2pix image-to-image translation framework. A PatchGAN discriminator judges whether local image patches look real or fake. This pushes the generator toward more realistic local color and texture statistics, helping avoid flat or washed-out results.
+
+4. Colorfulness loss.
+This is the paper’s custom addition, inspired by the colorfulness score of Hasler and Suesstrunk. The loss is:
+
+
+describe the spread and mean of pixels in a red-green/yellow-blue color plane. Intuitively, images with richer color variation have larger colorfulness scores. Because the loss subtracts this score from 1, minimizing it encourages more colorful outputs. This is meant to counter the dullness often seen in colorization models. The full generator objective is a weighted sum of pixel, perceptual, adversarial, and colorfulness losses, with weights λ
+
+### Evaluation Metrics
+The paper mainly uses FID, CF, ΔCF, and PSNR.
+
+FID (Fréchet Inception Distance) measures *how similar the distribution of generated images is to the distribution of real images*, using features from an Inception network. Lower FID is better. It does not check whether each generated image matches the exact ground-truth colors, but whether the generated set looks statistically realistic. This is appropriate for colorization because many different colorizations can be valid.
+
+CF (colorfulness score), measures how vivid or colorful an image is. Higher CF means stronger colorfulness. However, the paper emphasizes that higher CF is not always better: an oversaturated or unnatural image can score highly.
+
+ΔCF is the difference between the colorfulness of the generated image and the ground-truth image. Lower ΔCF means the model’s colorfulness is closer to real images. This is important because it balances vividness with realism: the goal is not maximum color, but natural-looking color.
+
+PSNR (Peak Signal-to-Noise Ratio) is a pixel-level reconstruction metric. Higher PSNR means closer pixel-wise similarity to the ground truth. The authors include it for reference but note, following prior colorization literature that pixel-level metrics are not ideal for colorization because the ground truth is only one of many possible valid color choices.
+
+### Limitations
+
+DDColor still struggles with transparent or translucent objects, where visual semantics and color boundaries are especially ambiguous. The authors also note that, like many automatic colorization systems, DDColor lacks user control: the model chooses plausible colors by itself, but the user cannot easily specify “make this object blue” or guide it with text prompts or color scribbles. They list such interactive controls as future work.

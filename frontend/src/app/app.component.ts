@@ -283,7 +283,7 @@ export class AppComponent {
       clearInterval(this.phaseTimer);
       this.phaseTimer = undefined;
     }
-    this.loadingPhaseText = 'Done!';
+    this.loadingPhaseText = 'Colorized!';
 
     // Animate 95 → 100 before showing result
     const finishTimer = setInterval(() => {
