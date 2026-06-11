@@ -237,15 +237,15 @@ export class AppComponent {
       // Sunset — Red/Orange/Pink/Purple
       ['#e040fb', '#ff4081', '#ff6d00', '#aa00ff', '#f06292'],
       // Aurora — Green/Cyan/Blue/Violet
-      ['#00e5ff', '#00bfa5', '#1de9b6', '#651fff', '#40c4ff'],
+      //['#00e5ff', '#00bfa5', '#1de9b6', '#651fff', '#40c4ff'],
       // Inferno — Deep Red/Gold/Crimson
       ['#ff1744', '#ff6f00', '#d500f9', '#c62828', '#ff6d00'],
       // Ocean — Navy/Teal/Seafoam/Indigo
-      ['#0d47a1', '#006064', '#00897b', '#1565c0', '#4a148c'],
+      //['#0d47a1', '#006064', '#00897b', '#1565c0', '#4a148c'],
       // Galaxy — Deep Purple/Pink/Cobalt
       ['#6a1b9a', '#ad1457', '#1a237e', '#4527a0', '#880e4f'],
       // Forest — Dark Green/Emerald/Teal/Blue
-      ['#1b5e20', '#004d40', '#0d47a1', '#33691e', '#006064'],
+      //['#1b5e20', '#004d40', '#0d47a1', '#33691e', '#006064'],
     ];
     this.blobPalette = palettes[Math.floor(Math.random() * palettes.length)];
   }
