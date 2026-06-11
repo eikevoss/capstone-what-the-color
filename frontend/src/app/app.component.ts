@@ -175,14 +175,14 @@ export class AppComponent {
   prevImage() {
     if (this.currentIndex > 0) {
       this.currentIndex--;
-      // this.sliderPos = 50;
+      this.sliderPos = 50;
     }
   }
 
   nextImage() {
     if (this.currentIndex < this.resultUrls.length - 1) {
       this.currentIndex++;
-      // this.sliderPos = 50;
+      this.sliderPos = 50;
     }
   }
 
@@ -284,7 +284,7 @@ export class AppComponent {
       clearInterval(this.phaseTimer);
       this.phaseTimer = undefined;
     }
-    this.loadingPhaseText = 'Colorized!';
+    this.loadingPhaseText = 'Colorizing…';
 
     // Animate current progress → 100, then call onComplete
     const finishTimer = setInterval(() => {
