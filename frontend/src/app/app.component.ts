@@ -36,6 +36,7 @@ export class AppComponent {
   blobPalette: string[] = ['#7c6ef5', '#2a4ccc', '#8ab0f0', '#0d5c5c', '#c8a0d0'];
   private phaseTimer?: any;
   private progressTimer?: any;
+  private loadingProgressRaw = 0;
 
   constructor(
     private api: ApiService,
@@ -111,21 +112,21 @@ export class AppComponent {
       next: (res) => {
         console.log('✅ uploadSingle success');
         this.zone.run(() => {
-          this.stopLoadingPhases();
           this.resultUrl = URL.createObjectURL(res);
-          setTimeout(() => {
+          this.stopLoadingPhases(() => {
             this.isLoading = false;
             this.cdr.detectChanges();
-          }, 800);
+          });
         });
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('❌ uploadSingle error', err);
         this.zone.run(() => {
-          this.stopLoadingPhases();
-          this.error = 'Colorization failed. Please try again.';
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.stopLoadingPhases(() => {
+            this.error = 'Colorization failed. Please try again.';
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          });
         });
       }
     });
@@ -140,24 +141,24 @@ export class AppComponent {
       next: (blobs) => {
         console.log('✅ uploadBatch success, blobs:', blobs.length);
         this.zone.run(() => {
-          this.stopLoadingPhases();
-          this.resultUrls = blobs.map(b => URL.createObjectURL(b));
+          this.resultUrls = blobs.map((b: Blob) => URL.createObjectURL(b));
           this.resultUrl = this.resultUrls[0];
           this.currentIndex = 0;
           this.sliderPos = 50;
-          setTimeout(() => {
+          this.stopLoadingPhases(() => {
             this.isLoading = false;
             this.cdr.detectChanges();
-          }, 800);
+          });
         });
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('❌ uploadBatch error', err);
         this.zone.run(() => {
-          this.stopLoadingPhases();
-          this.error = 'Colorization failed. Please try again.';
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.stopLoadingPhases(() => {
+            this.error = 'Colorization failed. Please try again.';
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          });
         });
       }
     });
@@ -174,14 +175,14 @@ export class AppComponent {
   prevImage() {
     if (this.currentIndex > 0) {
       this.currentIndex--;
-      this.sliderPos = 50;
+      // this.sliderPos = 50;
     }
   }
 
   nextImage() {
     if (this.currentIndex < this.resultUrls.length - 1) {
       this.currentIndex++;
-      this.sliderPos = 50;
+      // this.sliderPos = 50;
     }
   }
 
@@ -250,11 +251,11 @@ export class AppComponent {
   }
 
   startLoadingPhases() {
+    this.loadingProgressRaw = 0;
     this.loadingProgress = 0;
     this.loadingPhase = 0;
     this.loadingPhaseText = 'Uploading…';
 
-    // Asymptotic progress — never fully stops, approaches 99% but never reaches it
     const phases = [
       { until: 25, text: 'Uploading…' },
       { until: 60, text: 'Analyzing…' },
@@ -262,10 +263,10 @@ export class AppComponent {
     ];
 
     this.progressTimer = setInterval(() => {
-      // Speed slows down as we get closer to 99 — always moving, never stuck
-      const remaining = 99 - this.loadingProgress;
+      const remaining = 99 - this.loadingProgressRaw;
       const increment = remaining * 0.015 + 0.05;
-      this.loadingProgress = Math.min(Math.round(this.loadingProgress + increment), 99);
+      this.loadingProgressRaw = Math.min(this.loadingProgressRaw + increment, 99);
+      this.loadingProgress = Math.round(this.loadingProgressRaw);
       const p = this.loadingProgress;
       const phase = phases.find(ph => p < ph.until) ?? phases[phases.length - 1];
       this.loadingPhaseText = phase.text;
@@ -274,7 +275,7 @@ export class AppComponent {
     }, 300);
   }
 
-  stopLoadingPhases() {
+  stopLoadingPhases(onComplete: () => void) {
     if (this.progressTimer) {
       clearInterval(this.progressTimer);
       this.progressTimer = undefined;
@@ -285,13 +286,16 @@ export class AppComponent {
     }
     this.loadingPhaseText = 'Colorized!';
 
-    // Animate 95 → 100 before showing result
+    // Animate current progress → 100, then call onComplete
     const finishTimer = setInterval(() => {
-      this.loadingProgress = Math.min(this.loadingProgress + 1, 100);
+      this.loadingProgress = Math.min(this.loadingProgress + 2, 100);
       this.blobBackground = this.makeBlobBg(this.loadingProgress);
       this.cdr.detectChanges();
-      if (this.loadingProgress >= 100) clearInterval(finishTimer);
-    }, 60);
+      if (this.loadingProgress >= 100) {
+        clearInterval(finishTimer);
+        setTimeout(() => onComplete(), 300);
+      }
+    }, 40);
   }
 
   onSliderMove(event: MouseEvent) {
