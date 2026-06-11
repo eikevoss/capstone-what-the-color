@@ -190,12 +190,6 @@ body {
   background: transparent;
 }
 
-.loading-phase-text {
-  font-size: 16px;
-  color: #fff;
-  letter-spacing: 0.02em;
-}
-
 .loading-pct {
   font-size: 72px;
   font-weight: 500;
@@ -378,6 +372,7 @@ body {
 .loading-phase-text {
   font-size: 14px;
   color: #fff;
+  letter-spacing: 0.02em;
 }
 
 .loading-steps {
